@@ -9,8 +9,8 @@ Name=MAC Changer
 Exec=qterminal -e $HOME/macchanger.sh
 EOF
 
-wlan=$(ip -o link show | grep -o 'wl[^:]*' | head -1)
-eth=$(ip -o link show | grep -oE '(en|eth)[^:]*' | head -1)
+wlan=$(ip -o link show | awk -F': ' '{print $2}' | grep '^wl' | head -1)
+eth=$(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(en|eth)' | head -1)
 
 ip a s
 
