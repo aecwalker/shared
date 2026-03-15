@@ -9,6 +9,11 @@ Name=MAC Changer
 Exec=qterminal -e $HOME/macchanger.sh
 EOF
 
+if ! command -v macchanger &>/dev/null; then
+    echo "error: macchanger is not installed"
+    exit 1
+fi
+
 wlan=$(ip -o link show | awk -F': ' '{print $2}' | grep '^wl' | head -1)
 eth=$(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(en|eth)' | head -1)
 
@@ -21,6 +26,7 @@ if [[ -n "$wlan" ]]; then
         sudo ip link set dev "$wlan" down
         sudo macchanger -r "$wlan"
         sudo ip link set dev "$wlan" up
+        sleep 3
     elif [[ "$w" == 3 ]]; then
         kill -9 $PPID
     fi
@@ -33,6 +39,7 @@ if [[ -n "$eth" ]]; then
         sudo ip link set dev "$eth" down
         sudo macchanger -r "$eth"
         sudo ip link set dev "$eth" up
+        sleep 3
     fi
     [[ "$e" == 2 ]] && kill -9 $PPID
 fi
